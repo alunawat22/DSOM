@@ -1,4 +1,3 @@
-# DSOM
 pipeline {
     agent any
     parameters {
@@ -7,7 +6,7 @@ pipeline {
                      defaultValue: 'master'
     }
     stages {
-        stage('Example') {
+        stage('Main') {
             steps {
                 checkout([$class: 'GitSCM',
                           branches: [[name: "${params.BRANCH_TAG}"]],
@@ -15,7 +14,7 @@ pipeline {
                           extensions: [],
                           gitTool: 'Default',
                           submoduleCfg: [],
-                          userRemoteConfigs: [[url: 'https://github.com/alunawat22/DSOM.git']]
+                          userRemoteConfigs: [[url: 'https://github.com/jenkinsci/git-parameter-plugin.git']]
                         ])
             }
         }
