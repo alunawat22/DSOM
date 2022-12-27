@@ -1,3 +1,25 @@
 # DSOM
-
-choice(choices: ['2022100.1.00.00','2022101.1.00.00','2022102.1.00.00'], description: '', name: 'TARGET_VERSION'),
+pipeline {
+    agent any
+    parameters {
+        gitParameter name: 'BRANCH_TAG',
+                     type: 'PT_BRANCH_TAG',
+                     defaultValue: 'master'
+    }
+    stages {
+        stage('Example') {
+            steps {
+                checkout([$class: 'GitSCM',
+                          branches: [[name: "${params.BRANCH_TAG}"]],
+                          doGenerateSubmoduleConfigurations: false,
+                          extensions: [],
+                          gitTool: 'Default',
+                          submoduleCfg: [],
+                          userRemoteConfigs: [[url: 'https://github.com/jenkinsci/git-parameter-plugin.git']]
+                        ])
+            }
+        }
+    }
+}
+Revision type
+pipeline {
