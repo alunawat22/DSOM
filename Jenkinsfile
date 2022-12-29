@@ -1,32 +1,53 @@
+// Define the pipeline
 pipeline {
-stage('Auto tagging')
-{ 
+// Set the agent to run on a Kubernetes cluster
+agent {
+kubernetes {
+// Set the label to use for the Jenkins agent pods
+label 'jenkins-agent'
+// Set the namespace to use for the Jenkins agent pods
+namespace 'jenkins'
+}
+}
+// Set the triggers to build the pipeline on new commits or pull request events
+triggers {
+githubPush()
+githubPullRequest()
+}
+// Define the stages of the pipeline
+stages {
+// Define the build stage
+stage('Build') {
+// Run the build steps in a container
 steps {
- script {
- sh “”” 
-version= \$(git describe — tags 'git rev-list — tags — max-count=1')
-#Version to get the latest tag 
-A=”\$(echo \$version|cut -d ‘.’ -f1)”
-B=”\$(echo \$version|cut -d ‘.’ -f2)”
-C=”\$(echo \$version|cut -d ‘.’ -f3)”
- if [ \$C -gt 8 ]
- then 
-if [ \$B -gt 8 ]
- then
- A=\$((A+1))
- B=0 C=0 
-else
-B=\$((B+1))
- C=0
- fi
- else
- C=\$((C+1))
- fi
-echo “A[\$A.\$B.\$C]”>outFile “””
-nextVersion = readFile ‘outFile’ 
-echo “we will tag ‘${nextVersion}’” 
-result =nextVersion.substring(nextVersion.indexOf(“[“)+1,nextVersion.indexOf(“]”);
-echo “we will tag ‘${result}’”
-       }   
-     }
-   }
+container('maven') {
+// Run the Maven build
+sh 'mvn clean package'
+}
+}
+}
+// Define the test stage
+stage('Test') {
+// Run the test steps in a container
+steps {
+container('openjdk') {
+// Run the unit tests
+sh 'mvn test'
+}
+}
+}
+// Define the deploy stage
+stage('Deploy') {
+// Run the deploy steps in a container
+steps {
+container('kubectl') {
+// Set the environment variables for the Kubernetes deployment
+withEnv(["NAMESPACE=production"]) {
+// Deploy the application to the Kubernetes cluster
+sh 'kubectl apply -f deploy/kubernetes/deployment.yml'
+}
+}
+}
+}
+}
+}
