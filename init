@@ -1,0 +1,16 @@
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+[remote \"origin\"]
+        # replace with your own repo!
+     url = git@https://github.com/alunawat22/DSOM.git
+
+     fetch = +refs/heads/main:refs/remotes/origin/main
+     fetch = +refs/heads/development:refs/remotes/origin/development
+     fetch = +refs/heads/feature:refs/remotes/origin/feature
+
+[branch \"main\"]
+        remote = origin
+        merge = refs/heads/main
