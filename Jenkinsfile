@@ -1,6 +1,6 @@
 pipeline {
-stage(‘Auto tagging’)
-{ 
+//stage(‘Auto tagging’)
+//{ 
 steps {
  script {
  sh “”” 
@@ -27,4 +27,6 @@ nextVersion = readFile ‘outFile’
 echo “we will tag ‘${nextVersion}’” 
 result =nextVersion.substring(nextVersion.indexOf(“[“)+1,nextVersion.indexOf(“]”);
 echo “we will tag ‘${result}’”
-                                                    }                                                  
+       }   
+     }
+   }
